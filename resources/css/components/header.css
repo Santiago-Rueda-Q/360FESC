@@ -1,0 +1,54 @@
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 12px 0;
+    background-color: #ffffff !important; /* Pure white as requested */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Black shadow for differentiation */
+    transition: all 0.3s ease;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo-area {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    height: 65px; /* Larger icon as requested */
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo-area:hover .header-logo {
+    transform: scale(1.08);
+}
+
+.institutional-tag {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    color: var(--fesc-wine);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+@media (max-width: 768px) {
+    .institutional-tag {
+        display: none;
+    }
+    .header-logo {
+        height: 50px;
+    }
+}

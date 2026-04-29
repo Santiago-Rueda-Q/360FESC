@@ -1,187 +1,283 @@
 <template>
-    <div class="home-wrapper">
-        <header class="hero">
-            <div class="logo-container">
-                <h1 class="institutional-title">FESC<span>360</span></h1>
-            </div>
-            <p class="subtitle">{{ $t('welcome') }}</p>
-        </header>
+    <div class="home-container">
+        <Loader />
+        <Header @go-home="refresh" />
 
-        <main class="selection-container">
-            <h2 class="section-title">{{ $t('select_campus') }}</h2>
-            
-            <div class="cards-grid">
-                <!-- Sede Cúcuta -->
+        <main class="main-content">
+            <!-- Decorative Triangles -->
+            <div class="decorations">
+                <div class="decor-tri pastel-purple"></div>
+                <div class="decor-tri pastel-yellow"></div>
+                <div class="decor-tri pastel-mint"></div>
+                <div class="decor-tri pastel-blue"></div>
+            </div>
+
+            <section class="hero-section container animate__animated animate__fadeIn">
+                <h1 class="main-title">Nuestras <span>SEDES</span></h1>
+                <p class="hero-text">
+                    Haz clic en las tarjetas y descubre nuestras sedes a través de los Recorridos 360°. 
+                    ¡Explora cada espacio como si estuvieras allí!
+                </p>
+            </section>
+
+            <section class="campus-grid container">
                 <div 
-                    class="campus-card" 
-                    @click="$emit('navigate', 'recorrido', 'cucuta')"
-                    v-observe-visibility="onVisible"
+                    v-for="campus in campuses" 
+                    :key="campus.slug"
+                    class="campus-card animate__animated animate__zoomIn"
                 >
-                    <div class="card-image bg-cucuta"></div>
-                    <div class="card-content">
-                        <h3>{{ $t('campus_cucuta') }}</h3>
-                        <p>Sede principal con acceso a todas las facultades.</p>
-                        <button class="btn btn-primary">
-                            {{ $t('explore') }}
-                            <span v-html="Icons.ArrowRight"></span>
-                        </button>
+                    <div class="card-image-container" @click="$emit('navigate', 'recorrido', campus.slug)">
+                        <!-- Blur Background Image -->
+                        <img 
+                            :src="campus.image" 
+                            :alt="'sede ' + campus.slug" 
+                            class="campus-img-blur"
+                            loading="lazy"
+                        >
+                        <!-- Main Image -->
+                        <img 
+                            :src="campus.image" 
+                            :alt="'sede ' + campus.slug" 
+                            class="campus-img"
+                            loading="lazy"
+                        >
+                        <div class="card-overlay">
+                            <span class="explore-badge">{{ $t('explore') }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>{{ campus.name }}</h3>
+                        <p class="campus-desc">{{ campus.description }}</p>
                     </div>
                 </div>
-
-                <!-- Sede Ocaña -->
-                <div 
-                    class="campus-card" 
-                    @click="$emit('navigate', 'recorrido', 'ocana')"
-                >
-                    <div class="card-image bg-ocana"></div>
-                    <div class="card-content">
-                        <h3>{{ $t('campus_ocana') }}</h3>
-                        <p>Nuestra sede en el corazón de Ocaña.</p>
-                        <button class="btn btn-primary">
-                            {{ $t('explore') }}
-                            <span v-html="Icons.ArrowRight"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </section>
         </main>
 
-        <footer class="home-footer">
-            <p>&copy; 2026 Fundación de Estudios Superiores Comfanorte - FESC</p>
-        </footer>
+        <Footer />
     </div>
 </template>
 
 <script setup>
-import { Icons } from '../utils/icons';
+import { ref } from 'vue';
+import Loader from '../components/Loader.vue';
+import Header from '../components/Header.vue';
+import Footer from '../components/Footer.vue';
 
 defineEmits(['navigate']);
 
-const onVisible = (isVisible) => {
-    // Lazy load or animation trigger logic
-};
+const campuses = [
+    {
+        slug: 'cucuta',
+        name: 'Sede Principal Cúcuta',
+        image: '/Sedes/SedeCucuta.webp',
+        description: 'Ubicada en la Av. 4 #15-14, nuestra sede principal cuenta con modernos laboratorios, biblioteca y espacios diseñados para tu crecimiento académico.'
+    },
+    {
+        slug: 'ocana',
+        name: 'Sede Ocaña',
+        image: '/Sedes/SedeOcaña.webp',
+        description: 'En el corazón de Ocaña, brindamos educación de calidad con el respaldo institucional de FESC y Comfanorte.'
+    }
+];
+
+const refresh = () => window.location.reload();
 </script>
 
 <style scoped>
-.home-wrapper {
-    background-color: var(--fesc-light-gray);
+@import 'animate.css';
+
+.home-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 2rem;
+    padding-top: 80px;
+    background: var(--bg);
 }
 
-.hero {
+.main-content {
+    flex: 1;
+    position: relative;
+    padding: 60px 0;
+    overflow: hidden;
+}
+
+.decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.decor-tri {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));
+    border-radius: 10px;
+}
+
+.pastel-purple {
+    top: 10%; left: 5%;
+    border-width: 0 40px 70px 40px;
+    border-color: transparent transparent #e0c3fc transparent;
+    transform: rotate(15deg);
+}
+
+.pastel-yellow {
+    top: 60%; right: 5%;
+    border-width: 0 50px 85px 50px;
+    border-color: transparent transparent #fef9c3 transparent;
+    transform: rotate(-20deg);
+}
+
+.pastel-mint {
+    bottom: 20%; left: 10%;
+    border-width: 0 35px 60px 35px;
+    border-color: transparent transparent #d1fae5 transparent;
+    transform: rotate(45deg);
+}
+
+.pastel-blue {
+    top: 30%; right: 15%;
+    border-width: 0 45px 75px 45px;
+    border-color: transparent transparent #dbeafe transparent;
+    transform: rotate(160deg);
+}
+
+.hero-section {
     text-align: center;
-    margin-bottom: 3rem;
-    animation: fadeInDown 0.8s ease-out;
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 1;
 }
 
-.institutional-title {
-    font-size: 4rem;
+.main-title {
+    font-size: 3.5rem;
     color: var(--fesc-gray);
-    letter-spacing: -2px;
+    margin-bottom: 20px;
 }
 
-.institutional-title span {
+.main-title span {
     color: var(--fesc-red);
 }
 
-.subtitle {
-    font-size: 1.2rem;
-    color: var(--fesc-wine);
-    opacity: 0.8;
+.hero-text {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.8;
 }
 
-.selection-container {
-    max-width: 1000px;
-    width: 100%;
-}
-
-.section-title {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: var(--fesc-gray);
-    position: relative;
-}
-
-.section-title::after {
-    content: '';
-    display: block;
-    width: 50px;
-    height: 4px;
-    background: var(--fesc-red);
-    margin: 10px auto;
-    border-radius: 2px;
-}
-
-.cards-grid {
+.campus-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
 }
 
 .campus-card {
     background: white;
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.05);
+    transition: transform 0.4s ease;
 }
 
 .campus-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(227, 5, 19, 0.15);
+    transform: translateY(-15px);
 }
 
-.card-image {
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.5s ease;
+.card-image-container {
+    height: 300px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    background: #f0f0f0;
 }
 
-.campus-card:hover .card-image {
+.campus-img-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(10px) brightness(0.8);
     transform: scale(1.1);
+    opacity: 0.6;
 }
 
-.bg-cucuta { background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://placehold.co/600x400/e30513/white?text=Cucuta+Sede'); }
-.bg-ocana { background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://placehold.co/600x400/9c0f06/white?text=Ocana+Sede'); }
-
-.card-content {
-    padding: 1.5rem;
+.campus-img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    z-index: 1;
 }
 
-.card-content h3 {
-    margin-bottom: 0.5rem;
+.campus-card:hover .campus-img {
+    transform: scale(1.05);
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 2;
+}
+
+.campus-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.explore-badge {
+    background: white;
+    color: var(--fesc-red);
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-family: var(--font-secondary);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card-body {
+    padding: 30px;
+}
+
+.card-body h3 {
+    margin-bottom: 15px;
     color: var(--fesc-wine);
 }
 
-.card-content p {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 1.5rem;
+.campus-desc {
+    color: #777;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-align: justify;
 }
 
-.home-footer {
-    margin-top: auto;
-    padding: 2rem;
-    color: #999;
-    font-size: 0.8rem;
-}
-
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-span :deep(svg) {
-    width: 18px;
-    height: 18px;
-    vertical-align: middle;
-    margin-left: 5px;
+@media (max-width: 768px) {
+    .campus-grid {
+        grid-template-columns: 1fr;
+    }
+    .main-title {
+        font-size: 2.5rem;
+    }
 }
 </style>

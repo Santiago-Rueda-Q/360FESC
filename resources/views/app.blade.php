@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FESC 360 - Recorrido Virtual</title>
     <meta name="description" content="Explora las sedes de FESC en una experiencia inmersiva 360 grados.">
+    <link rel="icon" type="image/png" href="/favicon.png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
