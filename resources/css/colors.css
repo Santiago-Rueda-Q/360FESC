@@ -1,0 +1,21 @@
+:root {
+    /* Institutional Palette */
+    --fesc-red: #e30513;
+    --fesc-wine: #9c0f06;
+    --fesc-dark-wine: #630b00;
+    --fesc-gray: #3c3c3b;
+    --fesc-light-gray: #f5f5f5; /* 10% black approx */
+    --fesc-white: #ffffff;
+
+    /* Semantic Colors */
+    --primary: var(--fesc-red);
+    --secondary: var(--fesc-wine);
+    --accent: var(--fesc-dark-wine);
+    --text: var(--fesc-gray);
+    --bg: var(--fesc-white);
+    --bg-alt: var(--fesc-light-gray);
+
+    /* Typography */
+    --font-primary: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-secondary: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
