@@ -1,15 +1,28 @@
-import './bootstrap';
-import { createApp } from 'vue';
-import App from './App.vue';
-import { messages } from './lang/translations';
+import { ref, onMounted } from 'vue';
+import Home from './pages/Home.vue';
+import Recorrido from './pages/Recorrido.vue';
 
-// For simple translation helper
-const lang = document.documentElement.lang || 'es';
-const t = (key) => messages[lang]?.[key] || key;
+const page = ref('home');
+const slug = ref('');
 
-const app = createApp(App);
+const parseRoute = () => {
+    const path = window.location.pathname;
+    if (path.startsWith('/recorrido/')) {
+        page.value = 'recorrido';
+        slug.value = path.replace('/recorrido/', '');
+    } else {
+        page.value = 'home';
+    }
+};
 
-// Global properties
-app.config.globalProperties.$t = t;
+const navigate = (newPage, newSlug = '') => {
+    page.value = newPage;
+    slug.value = newSlug;
+    const path = newPage === 'home' ? '/' : `/recorrido/${newSlug}`;
+    window.history.pushState({}, '', path);
+};
 
-app.mount('#app');
+onMounted(() => {
+    parseRoute();
+    window.addEventListener('popstate', parseRoute);
+});
