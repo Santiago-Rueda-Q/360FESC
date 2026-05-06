@@ -1,11 +1,24 @@
 <template>
-    <div class="app-container">
-        <Home v-if="page === 'home'" @navigate="navigate" />
-        <Recorrido v-else-if="page === 'recorrido'" :slug="slug" @back="navigate('home')" />
-        
-        <!-- Simple Router Placeholder -->
+    <div class="app-wrapper">
+        <router-view></router-view>
     </div>
 </template>
 
-<script setup src="./App.js"></script>
-<style scoped src="./App.css"></style>
+<style>
+@import 'animate.css';
+
+:root {
+    --fesc-red: #e30513;
+    --fesc-wine: #8a0b12;
+    --fesc-gray: #4a4a49;
+    --bg: #ffffff;
+    --font-primary: 'Inter', sans-serif;
+    --font-secondary: 'Outfit', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-primary);
+    background: var(--bg);
+}
+</style>

@@ -48,6 +48,11 @@
                     <div class="card-body">
                         <h3>{{ campus.name }}</h3>
                         <p class="campus-desc">{{ campus.description }}</p>
+                        <div class="campus-social">
+                            <a :href="campus.maps" target="_blank" class="social-btn" v-html="Icons.MapPin"></a>
+                            <a :href="campus.instagram" target="_blank" class="social-btn" v-html="Icons.Instagram"></a>
+                            <a :href="campus.facebook" target="_blank" class="social-btn" v-html="Icons.Facebook"></a>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -57,5 +62,5 @@
     </div>
 </template>
 
-<script setup src="./Home.js"></script>
+<script src="./Home.js"></script>
 <style scoped src="./Home.css"></style>

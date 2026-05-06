@@ -14,6 +14,10 @@ class Espacio extends Model
         'imagen_360',
         'latitud',
         'longitud',
+        'google_maps_link',
+        'instagram_link',
+        'facebook_link',
+        'campus',
     ];
 
     /**

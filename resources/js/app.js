@@ -1,28 +1,15 @@
-import { ref, onMounted } from 'vue';
-import Home from './pages/Home.vue';
-import Recorrido from './pages/Recorrido.vue';
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import { messages } from './lang/translations';
 
-const page = ref('home');
-const slug = ref('');
+const app = createApp(App);
 
-const parseRoute = () => {
-    const path = window.location.pathname;
-    if (path.startsWith('/recorrido/')) {
-        page.value = 'recorrido';
-        slug.value = path.replace('/recorrido/', '');
-    } else {
-        page.value = 'home';
-    }
+// Implementación global de $t para traducciones
+const locale = 'es';
+app.config.globalProperties.$t = (key) => {
+    return messages[locale][key] || key;
 };
 
-const navigate = (newPage, newSlug = '') => {
-    page.value = newPage;
-    slug.value = newSlug;
-    const path = newPage === 'home' ? '/' : `/recorrido/${newSlug}`;
-    window.history.pushState({}, '', path);
-};
-
-onMounted(() => {
-    parseRoute();
-    window.addEventListener('popstate', parseRoute);
-});
+app.use(router);
+app.mount('#app');

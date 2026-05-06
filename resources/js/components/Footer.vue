@@ -26,10 +26,14 @@
             </div>
             
             <div class="footer-bottom">
-                <small>Laboratorio de Experiencias de Aprendizaje Inmersivo - LEAI</small>
+                <div class="footer-bottom-flex">
+                    <small>Laboratorio de Experiencias de Aprendizaje Inmersivo - LEAI</small>
+                    <button class="btn-admin-login" @click="openLogin">Admin Access</button>
+                </div>
                 <p>&copy; 2026 FESC. Todos los derechos reservados.</p>
             </div>
         </div>
+        <LoginModal :show="showLogin" @close="showLogin = false" />
     </footer>
 </template>
 

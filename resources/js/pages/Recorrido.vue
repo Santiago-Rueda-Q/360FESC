@@ -1,14 +1,14 @@
 <template>
     <div class="recorrido-wrapper">
-        <nav class="overlay-nav glass">
-            <button class="btn-back" @click="$emit('back')">
-                <span v-html="Icons.ArrowRight" style="transform: rotate(180deg); display: inline-block;"></span>
-                {{ $t('back') }}
-            </button>
-            <div class="current-location">
-                <h2>{{ campusName }}</h2>
-            </div>
-        </nav>
+        <TourSidebar 
+            :locations="locations"
+            :currentLocation="slug"
+            @navigate="handleNavigate"
+            @go-home="goHome"
+            @show-info="selectedHotspot = null"
+            @show-location="showLocation"
+            @show-gallery="showMap = !showMap"
+        />
 
         <div class="viewer-container">
             <Viewer360 
@@ -34,5 +34,5 @@
     </div>
 </template>
 
-<script setup src="./Recorrido.js"></script>
+<script src="./Recorrido.js"></script>
 <style scoped src="./Recorrido.css"></style>

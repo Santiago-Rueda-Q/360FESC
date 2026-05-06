@@ -9,10 +9,12 @@ class Hotspot extends Model
 {
     protected $fillable = [
         'espacio_id',
+        'target_espacio_id',
         'titulo',
         'descripcion',
         'theta',
         'phi',
+        'tipo',
     ];
 
     /**
@@ -21,5 +23,13 @@ class Hotspot extends Model
     public function espacio(): BelongsTo
     {
         return $this->belongsTo(Espacio::class);
+    }
+
+    /**
+     * Get the target space if this is a link hotspot.
+     */
+    public function targetEspacio(): BelongsTo
+    {
+        return $this->belongsTo(Espacio::class, 'target_espacio_id');
     }
 }

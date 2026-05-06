@@ -66,6 +66,31 @@
     color: #888;
 }
 
+.footer-bottom-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.btn-admin-login {
+    background: none;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-admin-login:hover {
+    background: var(--fesc-red);
+    color: white;
+    border-color: var(--fesc-red);
+}
+
 .footer-bg-elements {
     position: absolute;
     top: 0;
