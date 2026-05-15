@@ -1,8 +1,9 @@
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { Icons } from '../utils/icons';
 import Viewer360 from '../components/Viewer360.vue';
 import TourSidebar from '../components/TourSidebar.vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
     name: 'Recorrido',
@@ -14,29 +15,38 @@ export default {
         const selectedHotspot = ref(null);
         const showMap = ref(false);
 
-        const locations = [
-            { name: 'Sede Cúcuta', slug: 'cucuta' },
-            { name: 'Sede Ocaña', slug: 'ocana' },
-            { name: 'Biblioteca', slug: 'biblioteca' },
-        ];
+        const locations = ref([]);
 
         const campusName = computed(() => {
-            const loc = locations.find(l => l.slug === props.slug);
-            return loc ? loc.name : props.slug;
+            return espacio.value?.campus === 'ocana' ? 'Sede Ocaña' : 'Sede Cúcuta';
         });
 
         const fetchEspacio = async () => {
-            setTimeout(() => {
-                espacio.value = {
-                    nombre: campusName.value,
-                    imagen_360: 'https://threejs.org/examples/textures/2294472375_b9a84c113b_o.jpg',
-                    hotspots: [
-                        { id: 1, titulo: 'Biblioteca', descripcion: 'Espacio de estudio y consulta.', theta: 0, phi: 0 },
-                        { id: 2, titulo: 'Cafetería', descripcion: 'Zona de descanso y alimentación.', theta: 1.5, phi: 0.5 }
-                    ]
-                };
-            }, 1000);
+            try {
+                const response = await axios.get(`/api/espacios/${props.slug}`);
+                espacio.value = response.data;
+                
+                // Fetch other spaces in the same campus for the sidebar
+                if (espacio.value.campus) {
+                    const spacesRes = await axios.get(`/api/espacios?campus=${espacio.value.campus}`);
+                    locations.value = spacesRes.data.map(s => ({
+                        name: s.nombre,
+                        slug: s.slug
+                    }));
+                }
+            } catch (error) {
+                console.error("Error cargando espacio:", error);
+                if(error.response?.status === 404) {
+                    alert('Recorrido no encontrado');
+                    router.push('/');
+                }
+            }
         };
+
+        // Escuchar cambios en la URL
+        watch(() => props.slug, () => {
+            fetchEspacio();
+        });
 
         const onHotspotClick = (hotspot) => {
             selectedHotspot.value = hotspot;

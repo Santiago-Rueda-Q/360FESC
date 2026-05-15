@@ -26,7 +26,7 @@
                     :key="campus.slug"
                     class="campus-card animate__animated animate__zoomIn"
                 >
-                    <div class="card-image-container" @click="$emit('navigate', 'recorrido', campus.slug)">
+                    <div class="card-image-container" @click="navigateToCampus(campus.slug)">
                         <!-- Blur Background Image -->
                         <img 
                             :src="campus.image" 
@@ -42,7 +42,7 @@
                             loading="lazy"
                         >
                         <div class="card-overlay">
-                            <span class="explore-badge">{{ $t('explore') }}</span>
+                            <span class="explore-badge">Explorar</span>
                         </div>
                     </div>
                     <div class="card-body">

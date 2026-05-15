@@ -10,6 +10,11 @@
             @show-gallery="showMap = !showMap"
         />
 
+        <div class="tour-home-btn" @click="goHome" title="Volver al Inicio">
+            <img src="/fesc.svg" alt="FESC Logo" />
+        </div>
+
+
         <div class="viewer-container">
             <Viewer360 
                 v-if="espacio"

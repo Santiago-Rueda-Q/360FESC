@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Loader from '../components/Loader.vue';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
@@ -7,8 +8,9 @@ import { Icons } from '../utils/icons';
 export default {
     name: 'Home',
     components: { Loader, Header, Footer },
-    emits: ['navigate'],
     setup() {
+        const router = useRouter();
+
         const campuses = [
             {
                 slug: 'cucuta',
@@ -32,9 +34,14 @@ export default {
 
         const refresh = () => window.location.reload();
 
+        const navigateToCampus = (slug) => {
+            router.push({ name: 'recorrido', params: { slug } });
+        };
+
         return {
             campuses,
             refresh,
+            navigateToCampus,
             Icons
         };
     }

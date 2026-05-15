@@ -2,9 +2,15 @@ import { ref, onMounted, computed } from 'vue';
 import { Icons } from '../../utils/icons';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import ZoneFormModal from '../../components/Admin/ZoneFormModal.vue';
+import HotspotEditorModal from '../../components/Admin/HotspotEditorModal.vue';
 
 export default {
     name: 'AdminDashboard',
+    components: {
+        ZoneFormModal,
+        HotspotEditorModal
+    },
     setup() {
         const router = useRouter();
         const currentCampus = ref('cucuta');
@@ -73,15 +79,15 @@ export default {
             showZoneModal.value = true;
         };
 
-        const saveZone = async () => {
+        const saveZone = async (formData) => {
             try {
                 const token = localStorage.getItem('auth_token');
-                if (zoneForm.value.id) {
-                    await axios.put(`/api/admin/espacios/${zoneForm.value.id}`, zoneForm.value, {
+                if (formData.id) {
+                    await axios.put(`/api/admin/espacios/${formData.id}`, formData, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                 } else {
-                    await axios.post('/api/admin/espacios', zoneForm.value, {
+                    await axios.post('/api/admin/espacios', formData, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                 }

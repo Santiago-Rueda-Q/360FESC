@@ -14,6 +14,8 @@ class Hotspot extends Model
         'descripcion',
         'theta',
         'phi',
+        'x',
+        'y',
         'tipo',
     ];
 

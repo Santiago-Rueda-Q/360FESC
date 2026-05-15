@@ -10,15 +10,19 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 Route::post('/update-password', [\App\Http\Controllers\Api\AuthController::class, 'updatePassword'])->middleware('auth:sanctum');
 
+Route::get('/espacios', [\App\Http\Controllers\Api\EspacioController::class, 'index']);
 Route::get('/espacios/{slug}', [\App\Http\Controllers\Api\EspacioController::class, 'show']);
 
 // Admin API
 Route::prefix('admin')->group(function () {
+    Route::post('/upload-panorama', [\App\Http\Controllers\Admin\AdminController::class, 'uploadPanorama']);
+    
     Route::get('/espacios', [\App\Http\Controllers\Admin\AdminController::class, 'index']);
     Route::post('/espacios', [\App\Http\Controllers\Admin\AdminController::class, 'store']);
     Route::put('/espacios/{espacio}', [\App\Http\Controllers\Admin\AdminController::class, 'update']);
     Route::delete('/espacios/{espacio}', [\App\Http\Controllers\Admin\AdminController::class, 'destroy']);
     
     Route::post('/espacios/{espacio}/hotspots', [\App\Http\Controllers\Admin\AdminController::class, 'saveHotspot']);
+    Route::put('/hotspots/{hotspot}', [\App\Http\Controllers\Admin\AdminController::class, 'updateHotspot']);
     Route::delete('/hotspots/{hotspot}', [\App\Http\Controllers\Admin\AdminController::class, 'deleteHotspot']);
 });

@@ -8,10 +8,14 @@ import * as THREE from 'three';
 
 const props = defineProps({
     imageUrl: String,
-    hotspots: Array
+    hotspots: Array,
+    editMode: {
+        type: Boolean,
+        default: false
+    }
 });
 
-const emit = defineEmits(['hotspot-click']);
+const emit = defineEmits(['hotspot-click', 'add-hotspot']);
 
 const container = ref(null);
 let scene, camera, renderer, sphere;
@@ -55,12 +59,21 @@ const addHotspot = (data) => {
     canvas.width = 64;
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
+    
+    // Outer wave
+    ctx.fillStyle = 'rgba(227, 5, 19, 0.4)';
+    ctx.beginPath();
+    ctx.arc(32, 32, 28, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner dot
     ctx.fillStyle = '#e30513';
     ctx.beginPath();
-    ctx.arc(32, 32, 20, 0, Math.PI * 2);
+    ctx.arc(32, 32, 16, 0, Math.PI * 2);
     ctx.fill();
+    
     ctx.strokeStyle = 'white';
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 3;
     ctx.stroke();
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -110,7 +123,15 @@ const onPointerMove = (event) => {
     lat = (event.clientY - onPointerDownMouseY) * 0.1 + onPointerDownLat;
 };
 
-const onPointerUp = () => {
+const onPointerUp = (event) => {
+    if (event.isPrimary === false) return;
+    
+    // Si no hubo movimiento (es un click) y está en modo edición
+    if (props.editMode && Math.abs(event.clientX - onPointerDownMouseX) < 5 && Math.abs(event.clientY - onPointerDownMouseY) < 5) {
+        // Enviar coords donde está mirando la cámara
+        emit('add-hotspot', { theta, phi });
+    }
+
     isUserInteracting = false;
     document.removeEventListener('pointermove', onPointerMove);
     document.removeEventListener('pointerup', onPointerUp);
@@ -143,6 +164,17 @@ const update = () => {
     const z = 500 * Math.sin(phi) * Math.sin(theta);
 
     camera.lookAt(x, y, z);
+    
+    // Wave animation for hotspots
+    const time = Date.now() * 0.003;
+    scene.children.forEach(child => {
+        if (child.userData?.isHotspot) {
+            const scaleBase = 30;
+            const scaleWave = scaleBase + Math.sin(time + child.userData.data.id) * 4;
+            child.scale.set(scaleWave, scaleWave, 1);
+        }
+    });
+
     renderer.render(scene, camera);
 };
 

@@ -68,56 +68,24 @@
         </main>
 
         <!-- Zone Modal -->
-        <div v-if="showZoneModal" class="modal-overlay" @click.self="showZoneModal = false">
-            <div class="modal-card">
-                <div class="modal-header">
-                    <h3>{{ zoneForm.id ? 'Editar Zona' : 'Nueva Zona' }}</h3>
-                    <button @click="showZoneModal = false" class="close-btn">&times;</button>
-                </div>
-                <form @submit.prevent="saveZone" class="modal-body">
-                    <div class="form-group">
-                        <label>Nombre de la Zona</label>
-                        <input type="text" v-model="zoneForm.nombre" placeholder="Ej: Entrada Principal" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Slug (URL)</label>
-                        <input type="text" v-model="zoneForm.slug" placeholder="ej-entrada-principal" required>
-                    </div>
-                    <div class="form-group">
-                        <label>URL Imagen 360</label>
-                        <input type="text" v-model="zoneForm.imagen_360" placeholder="https://..." required>
-                    </div>
-                    <div class="form-group">
-                        <label>Descripción</label>
-                        <textarea v-model="zoneForm.descripcion" rows="3"></textarea>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" @click="showZoneModal = false" class="btn-secondary">Cancelar</button>
-                        <button type="submit" class="btn-primary">Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <ZoneFormModal 
+            v-if="showZoneModal" 
+            :zona="zoneForm" 
+            :campus="currentCampus"
+            @close="showZoneModal = false"
+            @save="saveZone" 
+        />
 
         <!-- Hotspot Editor Overlay -->
-        <div v-if="editingHotspots" class="hotspot-editor-overlay">
-            <div class="editor-header">
-                <h3>Editando Hotspots: {{ currentZone.nombre }}</h3>
-                <button @click="editingHotspots = false">Cerrar Editor</button>
-            </div>
-            <div class="editor-body">
-                <div class="editor-viewport" ref="editorViewport" @click="handleViewportClick">
-                    <img :src="currentZone.imagen_360" class="panorama-preview">
-                    <div v-for="hs in currentZone.hotspots" 
-                         :key="hs.id" 
-                         class="hs-marker"
-                         :style="{ left: hs.x + '%', top: hs.y + '%' }">
-                    </div>
-                </div>
-            </div>
-        </div>
+        <HotspotEditorModal 
+            v-if="editingHotspots"
+            :zone="currentZone"
+            :allZones="zones"
+            @close="editingHotspots = false"
+            @refresh="fetchEspacios"
+        />
     </div>
 </template>
 
 <script src="./AdminDashboard.js"></script>
-<style scoped src="./AdminDashboard.css"></style>
+<style src="./AdminDashboard.css"></style>
