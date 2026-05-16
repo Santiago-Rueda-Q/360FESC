@@ -1,16 +1,26 @@
+<?php
+
 /**
- * Vercel Bridge for Laravel with Debug Mode
+ * Vercel Serverless Runtime for Laravel
  */
 
-// Enable error reporting to catch the 500 error cause
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Verify autoloader exists
-if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    http_response_code(500);
-    die('Vercel Error: The "vendor" directory is missing. Please ensure your vercel-php builder is running composer install or that composer.json is in the root.');
+// 1. Forzar a Laravel a usar la carpeta /tmp para archivos temporales (Vercel Requirement)
+$tmpFolder = '/tmp/laravel/framework';
+$folders = ['/views', '/sessions', '/cache'];
+foreach ($folders as $folder) {
+    if (!is_dir($tmpFolder . $folder)) {
+        mkdir($tmpFolder . $folder, 0777, true);
+    }
 }
 
+// 2. Inyectar variables de entorno necesarias para Serverless
+$_ENV['APP_CONFIG_CACHE'] = '/tmp/config.php';
+$_ENV['VIEW_COMPILED_PATH'] = '/tmp/laravel/framework/views';
+$_ENV['SESSION_DRIVER'] = 'cookie'; // Las sesiones no pueden ser 'database' ni 'file' en Vercel
+$_ENV['LOG_CHANNEL'] = 'stderr';    // Enviar logs a la consola de Vercel
+
+// 3. Cargar el autoloader
+require __DIR__ . '/../vendor/autoload.php';
+
+// 4. Arrancar Laravel
 require __DIR__ . '/../public/index.php';
