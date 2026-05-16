@@ -142,7 +142,7 @@
     border-color: #e30513;
 }
 
-.theme-toggle :deep(svg), .theme-toggle svg {
+.theme-toggle svg {
     width: 22px;
     height: 22px;
     display: block;
@@ -460,7 +460,7 @@
     margin: 0 auto 1.5rem;
 }
 
-.dialog-icon :deep(svg), .dialog-icon svg {
+.dialog-icon svg {
     width: 35px;
     height: 35px;
     stroke: #e30513;
