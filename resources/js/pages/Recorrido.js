@@ -1,7 +1,7 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { Icons } from '../utils/icons';
-import Viewer360 from '../components/Viewer360.vue';
-import TourSidebar from '../components/TourSidebar.vue';
+import Viewer360 from '../components/Viewer360/index.vue';
+import TourSidebar from '../components/TourSidebar/index.vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
@@ -26,14 +26,13 @@ export default {
                 const response = await axios.get(`/api/espacios/${props.slug}`);
                 espacio.value = response.data;
                 
-                // Fetch other spaces in the same campus for the sidebar
-                if (espacio.value.campus) {
-                    const spacesRes = await axios.get(`/api/espacios?campus=${espacio.value.campus}`);
-                    locations.value = spacesRes.data.map(s => ({
-                        name: s.nombre,
-                        slug: s.slug
-                    }));
-                }
+                // Fetch all spaces for the sidebar accordion
+                const allSpacesRes = await axios.get('/api/espacios');
+                locations.value = allSpacesRes.data.map(s => ({
+                    name: s.nombre,
+                    slug: s.slug,
+                    campus: s.campus
+                }));
             } catch (error) {
                 console.error("Error cargando espacio:", error);
                 if(error.response?.status === 404) {
@@ -49,7 +48,14 @@ export default {
         });
 
         const onHotspotClick = (hotspot) => {
-            selectedHotspot.value = hotspot;
+            // Si el hotspot tiene una zona vinculada (target_espacio), navegamos a ella
+            if (hotspot.target_espacio && hotspot.target_espacio.slug) {
+                console.log("Navegando a:", hotspot.target_espacio.slug);
+                handleNavigate(hotspot.target_espacio.slug);
+            } else {
+                // Si no, mostramos el panel de información habitual
+                selectedHotspot.value = hotspot;
+            }
         };
 
         const handleNavigate = (slug) => {

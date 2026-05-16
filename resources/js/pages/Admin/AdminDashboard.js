@@ -22,6 +22,7 @@ export default {
         const showZoneModal = ref(false);
         const editingHotspots = ref(false);
         const currentZone = ref(null);
+        const zoneToDelete = ref(null);
         
         // Form Data
         const zoneForm = ref({
@@ -53,6 +54,14 @@ export default {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 espacios.value = response.data;
+                
+                // Actualizar currentZone si estamos editando hotspots, para que los nuevos puntos tengan su ID real.
+                if (editingHotspots.value && currentZone.value) {
+                    const updatedZone = response.data.find(z => z.id === currentZone.value.id);
+                    if (updatedZone) {
+                        currentZone.value = updatedZone;
+                    }
+                }
             } catch (error) {
                 if (error.response?.status === 401) {
                     router.push('/');
@@ -98,15 +107,22 @@ export default {
             }
         };
 
-        const deleteZone = async (id) => {
-            if (!confirm('¿Seguro que deseas eliminar esta zona?')) return;
+        const deleteZone = (zona) => {
+            zoneToDelete.value = zona;
+        };
+
+        const executeDeleteZone = async () => {
+            if (!zoneToDelete.value) return;
+            const id = zoneToDelete.value.id;
             try {
                 const token = localStorage.getItem('auth_token');
                 await axios.delete(`/api/admin/espacios/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
+                zoneToDelete.value = null;
                 fetchEspacios();
             } catch (error) {
+                console.error(error);
                 alert('Error al eliminar zona');
             }
         };
@@ -125,7 +141,6 @@ export default {
             const rect = event.currentTarget.getBoundingClientRect();
             const x = ((event.clientX - rect.left) / rect.width) * 100;
             const y = ((event.clientY - rect.top) / rect.height) * 100;
-            console.log(`New hotspot at: ${x}%, ${y}%`);
         };
 
         onMounted(fetchEspacios);
@@ -143,11 +158,14 @@ export default {
             openZoneModal,
             saveZone,
             deleteZone,
+            executeDeleteZone,
             editingHotspots,
             currentZone,
+            zoneToDelete,
             editHotspots,
             handleViewportClick,
             logout,
+            fetchEspacios,
             Icons
         };
     }

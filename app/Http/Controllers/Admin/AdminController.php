@@ -62,8 +62,8 @@ class AdminController extends Controller
             'descripcion' => 'nullable|string',
             'theta' => 'required|numeric',
             'phi' => 'required|numeric',
-            'x' => 'required|numeric',
-            'y' => 'required|numeric',
+            'x' => 'nullable|numeric',
+            'y' => 'nullable|numeric',
             'tipo' => 'string',
             'target_espacio_id' => 'nullable|exists:espacios,id'
         ]);
@@ -78,8 +78,8 @@ class AdminController extends Controller
             'descripcion' => 'nullable|string',
             'theta' => 'numeric',
             'phi' => 'numeric',
-            'x' => 'numeric',
-            'y' => 'numeric',
+            'x' => 'nullable|numeric',
+            'y' => 'nullable|numeric',
             'tipo' => 'string',
             'target_espacio_id' => 'nullable|exists:espacios,id'
         ]);
@@ -97,18 +97,50 @@ class AdminController extends Controller
     public function uploadPanorama(Request $request)
     {
         $request->validate([
-            'imagen' => 'required|image|mimes:jpeg,png,jpg,webp|max:10240', // Max 10MB
+            'imagen' => 'required|image|mimes:jpeg,png,jpg,webp|max:20480', // Aumentado a 20MB para fotos 360 pro
         ]);
 
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('panoramas', 'public');
-            
-            // Retorna URL completa accesible desde el navegador
-            return response()->json([
-                'url' => asset('storage/' . $path)
-            ]);
+            $file = $request->file('imagen');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileName = 'panorama_' . time() . '_' . $originalName . '.webp';
+            $storagePath = storage_path('app/public/panoramas/' . $fileName);
+
+            // Asegurar que el directorio existe
+            if (!file_exists(storage_path('app/public/panoramas'))) {
+                mkdir(storage_path('app/public/panoramas'), 0755, true);
+            }
+
+            // Convertir a WebP usando GD
+            $image = null;
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            try {
+                if ($extension === 'jpeg' || $extension === 'jpg') {
+                    $image = imagecreatefromjpeg($file->getRealPath());
+                } elseif ($extension === 'png') {
+                    $image = imagecreatefrompng($file->getRealPath());
+                    imagepalettetotruecolor($image);
+                    imagealphablending($image, true);
+                    imagesavealpha($image, true);
+                } elseif ($extension === 'webp') {
+                    $image = imagecreatefromwebp($file->getRealPath());
+                }
+
+                if ($image) {
+                    // Guardar con calidad 90 para balance perfecto entre peso y nitidez 360
+                    imagewebp($image, $storagePath, 90);
+                    imagedestroy($image);
+
+                    return response()->json([
+                        'url' => asset('storage/panoramas/' . $fileName)
+                    ]);
+                }
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Error procesando imagen: ' . $e->getMessage()], 500);
+            }
         }
 
-        return response()->json(['message' => 'No se encontró la imagen'], 400);
+        return response()->json(['message' => 'No se encontró la imagen o formato no compatible'], 400);
     }
 }

@@ -11,7 +11,7 @@
         />
 
         <div class="tour-home-btn" @click="goHome" title="Volver al Inicio">
-            <img src="/fesc.svg" alt="FESC Logo" />
+            <img src="/FESC.svg" alt="FESC Logo" />
         </div>
 
 

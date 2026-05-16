@@ -44,11 +44,11 @@
 }
 
 .nav-icon {
-    height: 30px;
+    height: 45px;
 }
 
 .nav-logo {
-    height: 35px;
+    height: 40px;
 }
 
 .brand-divider {
@@ -101,36 +101,52 @@
 }
 
 .theme-toggle {
-    background: var(--admin-bg);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     border: 1px solid var(--admin-border);
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    background: var(--admin-input-bg);
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
 }
 
-.dark .theme-toggle {
-    color: #ffd700; /* Gold for sun */
-    box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2);
+.admin-wrapper.dark .theme-toggle {
+    color: #ffd700 !important;
+    border-color: rgba(255, 215, 0, 0.4);
+    background: rgba(255, 215, 0, 0.05);
 }
 
-.light .theme-toggle {
-    color: #6366f1; /* Indigo for moon */
-    box-shadow: inset 0 0 10px rgba(99, 102, 241, 0.1);
+.admin-wrapper.dark .theme-toggle svg,
+.admin-wrapper.dark .theme-toggle svg path {
+    stroke: #ffd700 !important;
+}
+
+.admin-wrapper.light .theme-toggle {
+    color: #4f46e5 !important; /* Stronger Indigo */
+    border-color: rgba(79, 70, 229, 0.3);
+    background: rgba(79, 70, 229, 0.05);
+}
+
+.admin-wrapper.light .theme-toggle svg,
+.admin-wrapper.light .theme-toggle svg path {
+    stroke: #4f46e5 !important;
 }
 
 .theme-toggle:hover {
-    border-color: #e30513;
     transform: rotate(30deg) scale(1.1);
+    background: rgba(227, 5, 19, 0.1);
+    border-color: #e30513;
 }
 
-.theme-toggle :deep(svg) {
-    width: 20px;
-    height: 20px;
+.theme-toggle :deep(svg), .theme-toggle svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+    transition: all 0.3s ease;
 }
 
 .user-btn {
@@ -409,3 +425,89 @@
 .dropdown-panel .logout-btn:hover {
     background: rgba(227, 5, 19, 0.1);
 }
+
+/* Custom Professional Dialogs */
+.custom-dialog-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 5000;
+}
+
+.custom-dialog {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    padding: 3rem;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    animation: dialogPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dialog-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(227, 5, 19, 0.1);
+    color: #e30513;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.dialog-icon :deep(svg), .dialog-icon svg {
+    width: 35px;
+    height: 35px;
+    stroke: #e30513;
+    stroke-width: 2.5;
+}
+
+.custom-dialog h4 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.custom-dialog p {
+    color: var(--admin-text-muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-danger {
+    background: #e30513 !important;
+    color: white !important;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: #c10411 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(227, 5, 19, 0.3);
+}
+
+@keyframes dialogPop {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+
+
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }

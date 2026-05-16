@@ -1,10 +1,15 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
     "private": true,
+    "version": "1.0.0",
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "docker:build": "docker-compose build",
+        "deploy:caprover": "npm run build && docker build -t fesc360-prod . && docker tag fesc360-prod registry.caprover.com/fesc360:latest"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

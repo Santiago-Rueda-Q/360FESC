@@ -1,0 +1,57 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fesc360-app
+    container_name: fesc360-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/http.d/default.conf
+    networks:
+      - fesc-network
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: fesc360-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: fesc360
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_USER: fesc_user
+    volumes:
+      - fesc-dbdata:/var/lib/mysql
+    networks:
+      - fesc-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: fesc360-pma
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_ARBITRARY=1
+    networks:
+      - fesc-network
+
+networks:
+  fesc-network:
+    driver: bridge
+
+volumes:
+  fesc-dbdata:
+    driver: local

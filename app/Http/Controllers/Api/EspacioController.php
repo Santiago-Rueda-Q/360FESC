@@ -24,14 +24,14 @@ class EspacioController extends Controller
     {
         // Si el slug es un campus, devolvemos el primer espacio de ese campus
         if (in_array($slug, ['cucuta', 'ocana'])) {
-            $espacio = Espacio::with('hotspots')->where('campus', $slug)->first();
+            $espacio = Espacio::with('hotspots.targetEspacio')->where('campus', $slug)->first();
             if ($espacio) {
                 return $espacio;
             }
         }
 
         // De lo contrario, buscamos por el slug de la zona específica
-        return Espacio::with('hotspots')
+        return Espacio::with('hotspots.targetEspacio')
             ->where('slug', $slug)
             ->firstOrFail();
     }

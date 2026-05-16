@@ -2,11 +2,9 @@
     <div :class="['admin-wrapper', theme]">
         <nav class="admin-top-nav">
             <div class="nav-left">
-                <div class="brand">
+                <div class="brand" @click="$router.push('/')" title="Ir al Inicio" style="cursor: pointer;">
                     <img src="/favicon.svg" alt="FESC Icon" class="nav-icon">
                     <img src="/FESC.svg" alt="FESC Logo" class="nav-logo">
-                    <span class="brand-divider">|</span>
-                    <span class="brand-tag">360 ADMIN</span>
                 </div>
             </div>
 
@@ -23,9 +21,12 @@
             </div>
 
             <div class="nav-right">
-                <button class="theme-toggle" @click="toggleTheme" :title="theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'">
-                    <span v-if="theme === 'dark'" v-html="Icons.Sun"></span>
-                    <span v-else v-html="Icons.Moon"></span>
+                <button 
+                    class="theme-toggle" 
+                    @click="toggleTheme" 
+                    :title="theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'"
+                    v-html="theme === 'dark' ? Icons.Sun : Icons.Moon"
+                >
                 </button>
 
                 <div class="user-dropdown">
@@ -60,7 +61,7 @@
                         <p>{{ zona.hotspots?.length || 0 }} Hotspots</p>
                         <div class="zone-actions">
                             <button @click="openZoneModal(zona)">Editar</button>
-                            <button @click="deleteZone(zona.id)" class="delete">Eliminar</button>
+                            <button @click="deleteZone(zona)" class="delete">Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -84,6 +85,21 @@
             @close="editingHotspots = false"
             @refresh="fetchEspacios"
         />
+
+        <!-- Custom Delete Zone Confirmation -->
+        <Transition name="fade">
+            <div v-if="zoneToDelete" class="custom-dialog-overlay">
+                <div class="custom-dialog">
+                    <div class="dialog-icon" v-html="Icons.AlertTriangle"></div>
+                    <h4>¿Eliminar esta Zona?</h4>
+                    <p>Estás a punto de eliminar <strong>{{ zoneToDelete.nombre }}</strong>. Esto borrará permanentemente la imagen 360 y todos sus hotspots vinculados.</p>
+                    <div class="dialog-actions">
+                        <button @click="zoneToDelete = null" class="btn-secondary">Cancelar</button>
+                        <button @click="executeDeleteZone" class="btn-danger">Sí, Eliminar Todo</button>
+                    </div>
+                </div>
+            </div>
+        </Transition>
     </div>
 </template>
 
